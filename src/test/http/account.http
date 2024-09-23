@@ -17,5 +17,4 @@ Content-Type: application/json
 }
 
 ### Get AccountListByUserId
-
 GET localhost:8080/account?user_id=1

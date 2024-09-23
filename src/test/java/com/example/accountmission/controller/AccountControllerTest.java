@@ -52,7 +52,6 @@ class AccountControllerTest {
                         .unRegisteredAt(LocalDateTime.now())
                         .build());
         //when
-
         //then
         mockMvc.perform(post("/account")
                 .contentType(MediaType.APPLICATION_JSON)

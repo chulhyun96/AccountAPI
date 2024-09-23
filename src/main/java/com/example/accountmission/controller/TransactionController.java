@@ -30,8 +30,8 @@ public class TransactionController {
                     request.getAccountNumber(),
                     request.getAmount()));
         } catch (AccountException e) {
-            log.error("Failed to use Balance = {}{}",
-                    e.getErrorMessage(), e.getErrorCode());
+            log.error("Failed to use Balance = {}{}, Request = {USER ID = {}, ACCOUNT NUMBER = {},AMOUNT = {}}",
+                    e.getErrorMessage(), e.getErrorCode(), request.getUserId(), request.getAccountNumber(), request.getAmount());
             transactionService.saveFailedUseTransaction(
                     request.getAccountNumber(),
                     request.getAmount()

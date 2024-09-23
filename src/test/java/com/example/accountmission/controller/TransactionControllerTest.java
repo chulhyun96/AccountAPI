@@ -1,11 +1,10 @@
 package com.example.accountmission.controller;
 
 import com.example.accountmission.dto.CancelBalance;
+import com.example.accountmission.dto.QueryTransactionResponse;
 import com.example.accountmission.dto.TransactionDto;
 import com.example.accountmission.dto.UseBalance;
 import com.example.accountmission.service.TransactionService;
-import com.example.accountmission.type.TransactionResultType;
-import com.example.accountmission.type.TransactionType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
 
+import static com.example.accountmission.type.TransactionResultType.*;
+import static com.example.accountmission.type.TransactionType.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +46,7 @@ class TransactionControllerTest {
                 .willReturn(TransactionDto
                         .builder()
                         .accountNumber("1234567890")
-                        .transactionResultType(TransactionResultType.SUCCESS)
+                        .transactionResultType(SUCCESS)
                         .transactionId("transactionId")
                         .amount(1000L)
                         .transactedAt(LocalDateTime.now())
@@ -76,7 +77,7 @@ class TransactionControllerTest {
                 .willReturn(TransactionDto
                         .builder()
                         .accountNumber("1234567890")
-                        .transactionResultType(TransactionResultType.SUCCESS)
+                        .transactionResultType(SUCCESS)
                         .transactionId("transactionId")
                         .amount(1000L)
                         .transactedAt(LocalDateTime.now())
@@ -106,15 +107,22 @@ class TransactionControllerTest {
         given(transactionService.queryTransaction(anyString()))
                 .willReturn(TransactionDto.builder()
                         .accountNumber("1234567890")
-                        .transactionResultType(TransactionResultType.SUCCESS)
-                        .transactionType(TransactionType.USE)
+                        .transactionResultType(SUCCESS)
+                        .transactionType(USE)
                         .transactedAt(LocalDateTime.now())
                         .amount(1000L)
                         .transactionId("transactionId")
                         .build());
 
         //when
-        ResultActions perform = mockMvc.perform(get("/transaction/transactionId"))
+        ResultActions perform = mockMvc.perform(get("/transaction/transactionId")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new QueryTransactionResponse(
+                                        "1234567890", USE, SUCCESS,
+                                        "transactionId",1000L
+                                        ,LocalDateTime.now())
+                        )))
                 .andDo(print());
         //then
         perform.andExpect(status().isOk())
