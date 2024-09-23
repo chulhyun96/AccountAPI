@@ -397,5 +397,43 @@ class TransactionServiceTest {
         //then
         assertEquals(ErrorCode.TRANSACTION_ACCOUNT_UN_MATCH, exception.getErrorCode());
     }
+    @Test
+    @DisplayName("거래 조회 성공")
+    void successQueryTransaction() {
+        //given
+        AccountUser user = new AccountUser(1L, "First");
+        Account account = new Account(1L, user, "1234567890",
+                AccountStatus.IN_USE, 10000L, LocalDateTime.now(), null);
+        Transaction transaction = new Transaction(
+                1L, USE, SUCCESS, account, 1000L,
+                account.getBalance() - 1000L,
+                "TRANSACTION_ID", LocalDateTime.now());
+
+        given(transactionRepository.findByTransactionId(anyString()))
+                .willReturn(Optional.of(transaction));
+        //when
+        TransactionDto transactionDto = transactionService.queryTransaction(transaction.getTransactionId());
+
+        //then
+        assertAll(
+                () -> assertEquals(USE, transactionDto.getTransactionType()),
+                () -> assertEquals(SUCCESS, transactionDto.getTransactionResultType()),
+                () -> assertEquals(1000L, transactionDto.getAmount()),
+                () -> assertEquals(account.getBalance() - 1000L,
+                        transactionDto.getBalanceSnapshot())
+        );
+    }
+    @Test
+    @DisplayName("거래 조회 실패")
+    void queryTransaction_TransactionNotFound() {
+        //given
+        given(transactionRepository.findByTransactionId(anyString()))
+                .willReturn(Optional.empty());
+        //when
+        AccountException exception = assertThrows(AccountException.class, () ->
+                transactionService.queryTransaction("TRANSACTION_ID"));
+        //then
+        assertEquals(ErrorCode.TRANSACTION_NOT_FOUND, exception.getErrorCode());
+    }
 
 }
