@@ -20,6 +20,7 @@ public class CreateAccount {
         private Long userId;
 
         @NotNull
+        @Min(0)
         private Long initialBalance;
     }
     @Getter
