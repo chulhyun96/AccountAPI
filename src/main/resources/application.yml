@@ -19,10 +19,5 @@ spring:
         format_sql: true
         show_sql: true
 
-logging:
-  level:
-    io:
-      netty: DEBUG
-
 
 

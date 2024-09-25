@@ -7,5 +7,5 @@ import java.lang.annotation.*;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AccountLock {
-    long tryLockTime() default 5000L;
+    String value(); // 락의 이름 고유 값
 }

@@ -23,10 +23,11 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("/transaction/use")
-    @AccountLock
+    @AccountLock(value = "#AccountNumber")
     public UseBalance.Response useBalance(
-            @RequestBody @Validated UseBalance.Request request) {
+            @RequestBody @Validated UseBalance.Request request) throws InterruptedException {
         try {
+            Thread.sleep(3000L);
             return UseBalance.Response.from(transactionService.useBalance(
                     request.getUserId(),
                     request.getAccountNumber(),
@@ -42,8 +43,8 @@ public class TransactionController {
         }
     }
     @PostMapping("/transaction/cancel")
-    @AccountLock
-    public CancelBalance.Response useBalance(
+    @AccountLock(value = "#AccountNumber")
+    public CancelBalance.Response cancelBalance(
             @RequestBody @Validated CancelBalance.Request request) {
         try {
             return CancelBalance.Response.from(transactionService.cancelBalance(
@@ -63,7 +64,7 @@ public class TransactionController {
 
     @GetMapping("/transaction/{transactionId}")
     public QueryTransactionResponse queryTransaction(
-            @PathVariable String transactionId) {
+            @PathVariable("transactionId") String transactionId) {
         return QueryTransactionResponse.from(
                 transactionService.queryTransaction(transactionId));
     }

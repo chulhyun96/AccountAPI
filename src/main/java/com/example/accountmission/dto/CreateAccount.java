@@ -1,5 +1,6 @@
 package com.example.accountmission.dto;
 
+import com.example.accountmission.aop.AccountLockIdInterface;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 public class CreateAccount {
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Request {
         @NotNull
         @Min(1)

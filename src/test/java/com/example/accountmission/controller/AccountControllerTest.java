@@ -69,7 +69,7 @@ class AccountControllerTest {
     @DisplayName("계좌 조회 성공")
     void successGetAccount() throws Exception {
         //given
-        final Long id = 1L;
+        final long id = 1L;
         final AccountStatus accountStatus = AccountStatus.IN_USE;
         final String accountNumber = "4356";
 

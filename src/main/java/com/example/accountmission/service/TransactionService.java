@@ -1,5 +1,6 @@
 package com.example.accountmission.service;
 
+import com.example.accountmission.aop.AccountLock;
 import com.example.accountmission.domain.Account;
 import com.example.accountmission.domain.AccountUser;
 import com.example.accountmission.domain.Transaction;
@@ -16,6 +17,7 @@ import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -33,8 +35,7 @@ public class TransactionService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public TransactionDto useBalance(
-            Long userId, String accountNumber, Long amount) {
+    public TransactionDto useBalance(Long userId, String accountNumber, Long amount) {
         AccountUser user = accountUserRepository.findById(userId)
                 .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND));
         Account account = accountRepository.findByAccountNumber(accountNumber)
@@ -44,7 +45,7 @@ public class TransactionService {
         account.useBalance(amount);
 
         return TransactionDto.fromEntity(
-                saveTransactionStatus(TransactionType.USE,SUCCESS, amount, account)
+                saveTransactionStatus(TransactionType.USE, SUCCESS, amount, account)
         );
     }
 
@@ -62,11 +63,11 @@ public class TransactionService {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountException(ErrorCode.ACCOUNT_NOT_FOUND));
 
-        saveTransactionStatus(TransactionType.USE,FAIL,amount, account);
+        saveTransactionStatus(TransactionType.USE, FAIL, amount, account);
     }
 
     private Transaction saveTransactionStatus(
-            TransactionType transactionType ,TransactionResultType resultType, Long amount, Account account) {
+            TransactionType transactionType, TransactionResultType resultType, Long amount, Account account) {
         return transactionRepository.save(
                 Transaction.builder()
                         .transactionType(transactionType)
@@ -91,7 +92,7 @@ public class TransactionService {
         account.cancelBalance(amount);
 
         return TransactionDto.fromEntity(
-                saveTransactionStatus(TransactionType.CANCEL,SUCCESS, amount, account)
+                saveTransactionStatus(TransactionType.CANCEL, SUCCESS, amount, account)
         );
     }
 
@@ -108,8 +109,9 @@ public class TransactionService {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountException(ErrorCode.ACCOUNT_NOT_FOUND));
 
-        saveTransactionStatus(TransactionType.CANCEL,FAIL,amount, account);
+        saveTransactionStatus(TransactionType.CANCEL, FAIL, amount, account);
     }
+
     @Transactional
     public TransactionDto queryTransaction(String transactionId) {
         return TransactionDto.fromEntity(transactionRepository.findByTransactionId(transactionId)

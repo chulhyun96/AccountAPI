@@ -1,5 +1,6 @@
 package com.example.accountmission.dto;
 
+import com.example.accountmission.aop.AccountLockIdInterface;
 import com.example.accountmission.type.TransactionResultType;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 public class UseBalance {
+
     /**
      * {
      *   "userId" : 1,
@@ -19,7 +21,8 @@ public class UseBalance {
      */
     @Getter
     @AllArgsConstructor
-    public static class Request {
+    @NoArgsConstructor
+    public static class Request implements AccountLockIdInterface {
         @NotNull
         @Min(1)
         private Long userId;

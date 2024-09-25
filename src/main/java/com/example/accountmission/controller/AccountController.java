@@ -16,7 +16,6 @@ import java.util.List;
 public class AccountController {
     private final AccountService accountService;
 
-
     @PostMapping("/account")
     public CreateAccount.Response createAccount(
             @RequestBody @Validated CreateAccount.Request request) {
@@ -29,7 +28,7 @@ public class AccountController {
     }
 
     @GetMapping("/account/{id}")
-    public Account getAccount(@PathVariable Long id) {
+    public Account getAccount(@PathVariable("id") Long id) {
         return accountService.getAccount(id);
     }
 

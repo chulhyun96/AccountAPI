@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class DeleteAccount {
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Request {
         @NotNull
         @Min(1)

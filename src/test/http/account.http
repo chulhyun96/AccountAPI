@@ -4,8 +4,9 @@ Content-Type: application/json
 
 {
   "userId": 1,
-  "initialBalance": -100
+  "initialBalance": 20000
 }
+
 
 ### Delete Account
 DELETE localhost:8080/account
